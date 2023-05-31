@@ -6,6 +6,6 @@
         public required string Title { get; init; }
         public required string Overview { get; init; }
         public required int YearOfRelease { get; set; }
-        public required List<string> Genres { get; init; }
+        public required List<string> Genres { get; init; } = new();
     }
 }

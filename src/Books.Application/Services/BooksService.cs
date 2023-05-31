@@ -15,36 +15,36 @@ namespace Books.Application.Services
             _bookValidator = bookValidator;
         }
 
-        public async Task<bool> CreateAsync(Book book)
+        public async Task<bool> CreateAsync(Book book, CancellationToken token = default)
         {
-            await _bookValidator.ValidateAndThrowAsync(book);
-            return await _booksRepository.CreateAsync(book);
+            await _bookValidator.ValidateAndThrowAsync(book, token);
+            return await _booksRepository.CreateAsync(book, token);
         }
 
-        public Task<bool> DeleteAsync(Guid id)
+        public Task<bool> DeleteAsync(Guid id, CancellationToken token = default)
         {
-            return _booksRepository.DeleteAsync(id);
+            return _booksRepository.DeleteAsync(id, token);
         }
 
-        public Task<IEnumerable<Book>> GetAllAsync()
+        public Task<IEnumerable<Book>> GetAllAsync(CancellationToken token = default)
         {
-            return _booksRepository.GetAllAsync();
+            return _booksRepository.GetAllAsync(token);
         }
 
-        public Task<Book?> GetByIdAsync(Guid id)
+        public Task<Book?> GetByIdAsync(Guid id, CancellationToken token = default)
         {
-            return _booksRepository.GetByIdAsync(id);
+            return _booksRepository.GetByIdAsync(id, token);
         }
 
-        public async Task<Book?> UpdateAsync(Book book)
+        public async Task<Book?> UpdateAsync(Book book, CancellationToken token = default)
         {
-            await _bookValidator.ValidateAndThrowAsync(book);
-            bool bookExists = await _booksRepository.ExistsByIdAsync(book.Id);
+            await _bookValidator.ValidateAndThrowAsync(book, token);
+            var bookExists = await _booksRepository.ExistsByIdAsync(book.Id, token);
             if (!bookExists)
             {
                 return null;
             }
-            await _booksRepository.UpdateAsync(book);
+            await _booksRepository.UpdateAsync(book, token);
             return book;
         }
     }
