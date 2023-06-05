@@ -26,21 +26,52 @@ public sealed class RatingRepository : IRatingRepository
         return result > 0;
 
     }
-    public Task<float?> GetRatingAsync(Guid bookId, CancellationToken token = default)
+
+    public async Task<float?> GetRatingAsync(Guid bookId, CancellationToken token = default)
     {
-        throw new NotImplementedException();
+        using var conn = await _dbConnectionFactory.CreateConnectionAsync(token);
+        return await conn.QuerySingleOrDefaultAsync<float?>(new CommandDefinition("""
+            SELECT round(avg(r.rating), 1) FROM ratings r
+            WHERE bookid = @bookId
+            """, new { bookId }, cancellationToken: token));
     }
-    public Task<(float? Rating, int? UserRating)> GetRatingAsync(Guid bookId, Guid userId, CancellationToken token = default)
+
+    public async Task<(float? Rating, int? UserRating)> GetRatingAsync(Guid bookId, Guid userId, CancellationToken token = default)
     {
-        throw new NotImplementedException();
+        using var conn = await _dbConnectionFactory.CreateConnectionAsync(token);
+        return await conn.QuerySingleOrDefaultAsync<(float?, int?)>(new CommandDefinition("""
+            SELECT round(avg(rating), 1), 
+                   (SELECT rating 
+                    FROM ratings 
+                    WHERE bookid = @bookId 
+                      AND userid = @userId
+                    LIMIT 1) 
+            FROM ratings
+            WHERE bookid = @bookId
+            """, new { bookId, userId }, cancellationToken: token));
     }
-    public Task<bool> DeleteRatingAsync(Guid bookId, Guid userId, CancellationToken token = default)
+
+    public async Task<bool> DeleteRatingAsync(Guid bookId, Guid userId, CancellationToken token = default)
     {
-        throw new NotImplementedException();
+        using var conn = await _dbConnectionFactory.CreateConnectionAsync(token);
+        var result = await conn.ExecuteAsync(new CommandDefinition("""
+            DELETE FROM ratings
+            WHERE bookid = @bookId
+                AND userid = @userId
+            """, new { userId, bookId }, cancellationToken: token));
+
+        return result > 0;
     }
-    public Task<IEnumerable<BookRating>> GetRatingsForUserAsync(Guid userId, CancellationToken token = default)
+
+    public async Task<IEnumerable<BookRating>> GetRatingsForUserAsync(Guid userId, CancellationToken token = default)
     {
-        throw new NotImplementedException();
+        using var conn = await _dbConnectionFactory.CreateConnectionAsync(token);
+        return await conn.QueryAsync<BookRating>(new CommandDefinition("""
+            SELECT r.rating, r.bookid, b.slug
+            FROM ratings r
+            INNER JOIN books b on r.bookid = b.id
+            WHERE userid = @userId
+            """, new { userId }, cancellationToken: token));
     }
 }
 

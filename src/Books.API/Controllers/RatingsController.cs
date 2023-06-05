@@ -16,9 +16,14 @@ public class RatingsController : ControllerBase
     }
 
     [HttpGet]
-    public Task<IActionResult> GetUserRatings(CancellationToken token)
+    public async Task<IActionResult> GetUserRatings(CancellationToken token)
     {
-        throw new NotImplementedException();
+        //TODO: Get userId from token
+        var userId = Guid.NewGuid();
+        var ratings = await _ratingService.GetRatingsForUserAsync(userId, token);
+        // var ratingsResponse = ratings.MapToResponse();
+        return Ok(ratings);
+
     }
 
     [Route("/api/v1/books/{bookId:guid}/ratings")]
@@ -35,8 +40,14 @@ public class RatingsController : ControllerBase
 
     [Route("/api/v1/books/{bookId:guid}/ratings")]
     [HttpDelete]
-    public Task<IActionResult> Delete([FromRoute] Guid bookId, CancellationToken token)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete([FromRoute] Guid bookId, CancellationToken token)
     {
-        throw new NotImplementedException();
+        //TODO: Get userId from token
+        var userId = Guid.NewGuid();
+        var result = await _ratingService.DeleteRatingAsync(bookId, userId, token);
+        return result ? Ok() : NotFound();
+
     }
 }

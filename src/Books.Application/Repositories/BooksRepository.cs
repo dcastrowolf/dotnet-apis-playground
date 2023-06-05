@@ -64,14 +64,34 @@ namespace Books.Application.Repositories
             return book;
         }
 
-        public async Task<IEnumerable<Book>> GetAllAsync(CancellationToken token = default)
+        public async Task<IEnumerable<Book>> GetAllAsync(GetAllBooksOptions options, CancellationToken token = default)
         {
             using var conn = await _dbConnectionFactory.CreateConnectionAsync(token);
+
             var result = await conn.QueryAsync(new CommandDefinition("""
-                SELECT m.*, string_agg(g.name,',') as genres
-                FROM books m left join genres g on m.id = g.bookid
-                GROUP BY m.id
-            """, cancellationToken: token));
+                SELECT b.*, string_agg(g.name,',') as genres
+                    round(avg(r.rating), 1) as rating,
+                    myr.rating as userrating
+                FROM books b 
+                    LEFT JOIN genres g on b.id = g.bookid
+                    LEFT JOIN ratings r on b.id = g.bookid
+                    LEFT JOIN ratings myr on b.id = g.bookid
+                        AND myr.userid = @userId
+                WHERE (@title is null OR b.title LIKE ('%' || @title || '%'))
+                    AND (@yearofrelease is null OR b.yearofrelease = @yearofrelease)
+                GROUP BY b.id, userrating
+                LIMIT @pageSize
+                OFFSET @pageOffset
+            """,
+            new
+            {
+                userId = options.UserId,
+                title = options.Title,
+                yearofrelease = options.YearOfRelease,
+                pageSize = options.PageSize,
+                pageOffset = (options.Page - 1) * options.PageSize
+            },
+            cancellationToken: token));
 
             return result.Select(x => new Book
             {

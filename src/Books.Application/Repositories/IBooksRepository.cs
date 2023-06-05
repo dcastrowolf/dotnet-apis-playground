@@ -8,7 +8,7 @@ namespace Books.Application.Repositories
 
         Task<Book?> GetByIdAsync(Guid id, CancellationToken token = default);
 
-        Task<IEnumerable<Book>> GetAllAsync(CancellationToken token = default);
+        Task<IEnumerable<Book>> GetAllAsync(GetAllBooksOptions options, CancellationToken token = default);
 
         Task<bool> UpdateAsync(Book book, CancellationToken token = default);
 
