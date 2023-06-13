@@ -27,6 +27,15 @@ namespace Books.Application.Database
                     bookId UUID REFERENCES books(id),
                     name TEXT NOT NULL);
             """);
+
+            await connection.ExecuteAsync("""
+                CREATE TABLE IF NOT EXISTS ratings (
+                userid UUID,
+                bookid UUID REFERENCES books (id),
+                rating INTEGER NOT NULL,
+                PRIMARY KEY (userid, bookid));
+            """);
+
         }
 
     }

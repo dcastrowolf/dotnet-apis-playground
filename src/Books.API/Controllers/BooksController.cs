@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Books.API.Mapping;
 using Books.Application.Services;
 using Books.Contracts.Request;
@@ -6,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Books.API.Controllers;
 
 [ApiController]
-[Route("/api/v1/books")]
+[Route("/api/v{version:apiVersion}/books")]
+[ApiVersion("1.0")]
 public class BooksController : ControllerBase
 {
     private readonly IBooksService _booksService;
@@ -42,9 +44,10 @@ public class BooksController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll(CancellationToken token)
+    public async Task<IActionResult> GetAll([FromQuery] GetAllBooksRequest request, CancellationToken token)
     {
-        var movies = await _booksService.GetAllAsync(token);
+        var options = request.MapToOptions();
+        var movies = await _booksService.GetAllAsync(options, token);
         var response = movies.MapToBooksResponse();
         return Ok(response);
     }

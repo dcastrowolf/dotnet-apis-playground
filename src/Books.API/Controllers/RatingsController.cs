@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Books.Application.Services;
 using Books.Contracts.Request;
 using Microsoft.AspNetCore.Mvc;
@@ -5,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Books.API.Controllers;
 
 [ApiController]
-[Route("/api/v1/ratings")]
+[Route("/api/v{version:apiVersion}/ratings")]
+[ApiVersion("1.0")]
 public class RatingsController : ControllerBase
 {
     private readonly IRatingService _ratingService;

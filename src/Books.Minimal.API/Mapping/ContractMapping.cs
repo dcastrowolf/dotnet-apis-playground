@@ -1,8 +1,8 @@
-﻿using Books.Application.Models;
+using Books.Application.Models;
 using Books.Contracts.Request;
 using Books.Contracts.Response;
 
-namespace Books.API.Mapping
+namespace Books.Minimal.API.Mapping
 {
     public static class ContractMapping
     {

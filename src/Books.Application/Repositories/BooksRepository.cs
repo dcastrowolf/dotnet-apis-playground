@@ -69,7 +69,8 @@ namespace Books.Application.Repositories
             using var conn = await _dbConnectionFactory.CreateConnectionAsync(token);
 
             var result = await conn.QueryAsync(new CommandDefinition("""
-                SELECT b.*, string_agg(g.name,',') as genres
+                SELECT b.*, 
+                    string_agg(g.name,',') as genres,
                     round(avg(r.rating), 1) as rating,
                     myr.rating as userrating
                 FROM books b 

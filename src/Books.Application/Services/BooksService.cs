@@ -26,9 +26,9 @@ namespace Books.Application.Services
             return _booksRepository.DeleteAsync(id, token);
         }
 
-        public Task<IEnumerable<Book>> GetAllAsync(CancellationToken token = default)
+        public Task<IEnumerable<Book>> GetAllAsync(GetAllBooksOptions options, CancellationToken token = default)
         {
-            return _booksRepository.GetAllAsync(token);
+            return _booksRepository.GetAllAsync(options, token);
         }
 
         public Task<Book?> GetByIdAsync(Guid id, CancellationToken token = default)
