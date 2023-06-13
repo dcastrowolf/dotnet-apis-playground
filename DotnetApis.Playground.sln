@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yaml = docker-compose.yaml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Mock", "src\Identity.Mock\Identity.Mock.csproj", "{44A21A6F-0BDF-49A0-B86E-63903216BDBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{BADC6DED-26EE-4857-AFA0-176D2F2C20A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BADC6DED-26EE-4857-AFA0-176D2F2C20A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BADC6DED-26EE-4857-AFA0-176D2F2C20A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44A21A6F-0BDF-49A0-B86E-63903216BDBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44A21A6F-0BDF-49A0-B86E-63903216BDBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44A21A6F-0BDF-49A0-B86E-63903216BDBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44A21A6F-0BDF-49A0-B86E-63903216BDBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +56,7 @@ Global
 		{87292F8C-D07C-4389-8639-C68FCE3C12BE} = {7C1A31F9-CAB5-4F03-AC2F-3FB77BC62F19}
 		{D403E372-2D79-4E33-8FD6-8299D089D590} = {7C1A31F9-CAB5-4F03-AC2F-3FB77BC62F19}
 		{BADC6DED-26EE-4857-AFA0-176D2F2C20A5} = {7C1A31F9-CAB5-4F03-AC2F-3FB77BC62F19}
+		{44A21A6F-0BDF-49A0-B86E-63903216BDBF} = {7C1A31F9-CAB5-4F03-AC2F-3FB77BC62F19}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4161F1FE-7FB9-4315-BD79-65C8BABFE129}
