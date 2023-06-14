@@ -1,15 +1,54 @@
 using Asp.Versioning;
+using Books.API.Auth;
 using Books.API.Middlewares;
 using Books.API.Swagger;
 using Books.Application;
 using Books.Application.Database;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 // Add services to the container.
+
+// Add authentication and configure the defaults with the strategy of
+// a Bearer Token.
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(opt =>
+{
+    opt.TokenValidationParameters = new TokenValidationParameters
+    {
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(config["Jwt:Key"]!)),
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+        ValidIssuer = config["Jwt:Issuer"],
+        ValidAudience = config["Jwt:Audience"],
+        ValidateIssuer = true,
+        ValidateAudience = true
+    };
+});
+
+// Add Authorization
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy(AuthConstants.AdminUserPolicyName,
+        p => p.RequireClaim(AuthConstants.AdminUserClaimName, "true"));
+
+    opt.AddPolicy(AuthConstants.TrustedMemberPolicyName,
+        p => p.RequireAssertion(c =>
+            c.User.HasClaim(m => m is { Type: AuthConstants.AdminUserClaimName, Value: "true" }) ||
+            c.User.HasClaim(m => m is { Type: AuthConstants.TrustedMemberClaimName, Value: "true" })));
+
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -63,6 +102,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<ValidationMappingMiddleware>();

@@ -9,6 +9,7 @@ namespace Identity.Mock.Token
     public static class TokenEndpoint
     {
         private static readonly TimeSpan TokenLifeTime = TimeSpan.FromHours(8);
+
         public static IEndpointRouteBuilder MapCreateToken(this IEndpointRouteBuilder app, IConfiguration configuration)
         {
             var TokenSecret = configuration["BooksApiSecret"]!;
@@ -53,7 +54,7 @@ namespace Identity.Mock.Token
                 var token = tokenHandler.CreateToken(tokenDescriptor);
 
                 var jwt = tokenHandler.WriteToken(token);
-                return Ok(jwt);
+                return Results.Ok(jwt);
             });
             return app;
         }

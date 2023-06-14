@@ -1,7 +1,9 @@
 using Asp.Versioning;
+using Books.API.Auth;
 using Books.API.Mapping;
 using Books.Application.Services;
 using Books.Contracts.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Books.API.Controllers;
@@ -18,6 +20,7 @@ public class BooksController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(AuthConstants.TrustedMemberPolicyName)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Create([FromBody] CreateBookRequest request, CancellationToken token)
     {
@@ -53,6 +56,7 @@ public class BooksController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(AuthConstants.TrustedMemberPolicyName)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateBookRequest request, CancellationToken token)
@@ -68,6 +72,7 @@ public class BooksController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(AuthConstants.AdminUserPolicyName)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken token)
